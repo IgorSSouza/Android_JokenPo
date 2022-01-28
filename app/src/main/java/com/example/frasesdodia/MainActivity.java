@@ -1,72 +1,84 @@
 package com.example.frasesdodia;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+        import androidx.appcompat.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.EditText;
+        import android.widget.ImageView;
+        import android.widget.SeekBar;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import java.util.Random;
+        import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EditText textV;
+    private TextView textP;
+    private TextView textG;
+    private TextView textTot;
+    private SeekBar seekBarGorj;
+
+    private double porcentagem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        textV = findViewById(R.id.textValor);
+        textP = findViewById(R.id.textPorcentagem);
+        textG = findViewById(R.id.textGorjeta);
+        textTot = findViewById(R.id.textTotal);
+        seekBarGorj = findViewById(R.id.seekBarGorjeta);
+
+        seekBarGorj.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                porcentagem = progress;
+                textP.setText(Math.round(porcentagem) + " %");
+                calcular();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
-    public void selecionadoPedra(View view){
-        this.opcaoSelecionada("pedra");
-    }
+    public void calcular(){
+
+        String valorRecuperado = textV.getText().toString();
+
+        if(valorRecuperado == null || valorRecuperado.equals("")){
+
+            Toast.makeText(
+
+                    getApplicationContext(),
+                    "Digite um valor primeiro!",
+                    Toast.LENGTH_LONG
 
 
-    public void selecionadoPapel(View view){
-        this.opcaoSelecionada("papel");
-    }
+            ).show();
 
-
-    public void selecionadoTesou(View view){
-        this.opcaoSelecionada("tesoura");
-    }
-
-
-    public void opcaoSelecionada(String opcaoSelecionada){
-
-        ImageView imagemResultado = findViewById(R.id.imageResultado);
-        TextView textResultado = findViewById(R.id.textResult);
-
-        int numero = new Random().nextInt(3);
-        String[] opcoes = {"pedra", "papel", "tesoura"};
-        String escolhaApp = opcoes[numero];
-
-        switch (escolhaApp){
-            case "pedra" :
-                imagemResultado.setImageResource(R.drawable.pedra);
-                break;
-            case "papel" :
-                imagemResultado.setImageResource(R.drawable.papel);
-                break;
-            case "tesoura" :
-                imagemResultado.setImageResource(R.drawable.tesoura);
-        }
-
-        if( (escolhaApp == "tesoura" && opcaoSelecionada == "papel")||
-                (escolhaApp == "papel" && opcaoSelecionada == "pedra") ||
-                (escolhaApp == "pedra" && opcaoSelecionada == "tesoura")
-        ){
-
-            textResultado.setText("O App Ganhou a partida!");
-
-        }else if((opcaoSelecionada == "tesoura" && escolhaApp == "papel")||
-                (opcaoSelecionada == "papel" && escolhaApp == "pedra") ||
-                (opcaoSelecionada == "pedra" && escolhaApp == "tesoura")
-        ){
-            textResultado.setText("Você Ganhou! Parabéns!");
         }else{
-            textResultado.setText("Empataram!");
-        }
+            double valorDigitado = Double.parseDouble(valorRecuperado);
 
+            double gorjeta = valorDigitado * (porcentagem/100);
+
+            double total = gorjeta + valorDigitado;
+
+            textG.setText("R$ " + Math.round(gorjeta));
+            textTot.setText("R$ " + Math.round(total));
+        }
     }
+
 
 }
